@@ -11,7 +11,7 @@ An interactive financial analytics dashboard built using **Streamlit, Pandas, Nu
 ---
 
 ## 🚀 Live Demo
-
+https://idai104-1000442-zene-sophie-anand-fa2.streamlit.app/
 
 ---
 
