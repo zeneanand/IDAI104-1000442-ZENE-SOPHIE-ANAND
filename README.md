@@ -2,10 +2,10 @@
 
 An interactive financial analytics dashboard built using **Streamlit, Pandas, NumPy, and Plotly** to simulate and analyze cryptocurrency market volatility using mathematical models and real OHLCV data.
 
-**Student Name:** Aditya Jitendra Kumar Sahani  
-**Student ID:** 1000414  
+**Student Name:** Zene Sophie Anand
+**Student ID:** 1000442 
 **Course:** Artificial Intelligence  
-**Focus:** Mathematics for AI-II  
+**Focus:** Mathematics for AI-I  
 **Assessment Type:** Formative Assessment 2 (FA-2)  
 
 ---
@@ -34,7 +34,9 @@ The application allows users to:
 
 This project involved careful pre-planning of the user experience, layout structure, and component behavior to ensure a smooth and intuitive workflow. You can view the complete design storyboard, wireframes, and skill planning here:
 
-🔗 Storyboard Access Link : **[View Project Storyboard on Canva](https://www.canva.com/design/DAHCELq8wcs/PQRCbGKLdwuG2z-08r3Lhg/edit?utm_content=DAHCELq8wcs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)**
+🔗 Storyboard Access Link : **[View Project Storyboard on Canva](https://www.canva.com/design/DAHBjXYdWME/QiOeIvriqCXobmNKAjonLg/edit?
+utm_content=DAHBjXYdWME&utm_campaign=designshare&utm_medium=link2&utm_source=sh
+arebutton)**
 
 ![Storyboard](assets/App%20Screenshots/Storyboard.png)
 
@@ -266,3 +268,4 @@ This project demonstrates:
 ### 📄 License
 
 This application was exclusively developed for academic assessment and portfolio demonstration. It serves as an open-source technical showcase demonstrating applied mathematical modeling, algorithmic financial analysis, and large-scale data visualization in a practical software setting.
+
