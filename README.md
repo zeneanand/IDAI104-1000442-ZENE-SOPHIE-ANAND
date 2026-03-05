@@ -177,7 +177,7 @@ All charts include:
 ## 📁 Project Structure
 
 ```bash
-IDAI104-1000414-ADITYA-JITENDRA-KUMAR-SAHANI/
+IDAI104-1000442-ZENE-SOPHIE-ANAND/
 │
 ├── assets/
 │   └── App Screenshots/
