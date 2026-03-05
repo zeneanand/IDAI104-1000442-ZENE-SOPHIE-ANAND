@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -29,7 +28,6 @@ html, body, .stApp {
     font-family: 'Space Grotesk', sans-serif !important;
 }
 .block-container { padding-top: 1.5rem !important; padding-bottom: 2rem !important; max-width: 100% !important; }
-/* FIX 1: Removed 'header' from hidden so the Sidebar Arrow stays visible! */
 #MainMenu, footer { visibility: hidden; }
 header { background: transparent !important; }
 
@@ -176,7 +174,7 @@ def _init():
         page="onboard", prof_step=1,
         name="", email="", school="", role="", level="Intermediate",
         agreed=False, is_demo=False,
-        df=None, df_loaded=False, df_source="",   # "drive" | "upload" | "preloaded"
+        df=None, df_loaded=False, df_source="",
         drive_error="",
         feedbacks=[],
         ep_name="", ep_email="", ep_school="", ep_role="",
@@ -244,7 +242,6 @@ def hex_rgba(h, a):
 #  PAGE: ONBOARDING (3-second splash + Start Journey)
 # ══════════════════════════════════════════════════════════════════════════════
 def page_onboard():
-    # Only show the loading animation once.
     if not ss.get("loading_done", False):
         st.markdown("""
         <style>
@@ -262,15 +259,12 @@ def page_onboard():
         ss["loading_done"] = True
         st.rerun()
 
-    # The Hero Page with "Slide Up" effect, image background, text, and button.
     st.markdown("""
     <style>
-    /* Trigger a slide-up keyframe on the main layout */
     @keyframes slideUp {
       0% { opacity: 0; transform: translateY(60px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-    
     .hero-container {
       animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       background: linear-gradient(135deg, rgba(6,13,26,0.95) 0%, rgba(10,22,40,0.85) 100%), 
@@ -287,7 +281,6 @@ def page_onboard():
       flex-direction: column;
       justify-content: center;
     }
-    
     .hero-title {
       font-size: 56px;
       font-weight: 700;
@@ -297,13 +290,11 @@ def page_onboard():
       margin-bottom: 20px;
       max-width: 600px;
     }
-    
     .hero-title span {
       background: -webkit-linear-gradient(0deg, #0EA5E9, #38BDF8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
     .hero-desc {
       font-size: 16px;
       color: #94A3B8;
@@ -311,19 +302,15 @@ def page_onboard():
       max-width: 550px;
       margin-bottom: 40px;
     }
-    
-    /* Adding neon glow shadow to the Streamlit primary button */
     .stButton > button[kind="primary"] {
       box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
       transition: all 0.3s ease;
     }
-    
     .stButton > button[kind="primary"]:hover {
       box-shadow: 0 0 30px rgba(56, 189, 248, 0.9);
       transform: translateY(-2px);
     }
     </style>
-    
     <div class="hero-container">
       <div class="hero-title">Crypto Volatility<br><span>Visualizer</span></div>
       <div class="hero-desc">
@@ -334,7 +321,6 @@ def page_onboard():
     <br>
     """, unsafe_allow_html=True)
     
-    # We use columns to position the button cleanly on the left under the text
     col1, col2 = st.columns([1, 3])
     with col1:
         if st.button("Start Your Journey →", type="primary", use_container_width=True):
@@ -357,7 +343,6 @@ def page_auth():
 
         mode = ss.setdefault("auth_mode", "login")
 
-        # ── COMMON CSS FOR AUTH ──────────────────────────────────────────────
         st.markdown("""
         <style>
         .auth-box {
@@ -389,7 +374,6 @@ def page_auth():
             color: #7DD3FC !important;
             text-decoration: underline !important;
         }
-        /* Make form elements tighter */
         div[data-testid="stTextInput"] {
             margin-bottom: -10px;
         }
@@ -398,7 +382,6 @@ def page_auth():
 
         # ── LOGIN ────────────────────────────────────────────────────────────
         if mode == "login":
-            # Using an invisible spacer to align text
             st.markdown('<div style="margin-top:10px;"></div>', unsafe_allow_html=True)
             flabel("Username / Email")
             em = st.text_input("login_email", label_visibility="collapsed",
@@ -409,7 +392,6 @@ def page_auth():
             
             st.markdown('<div style="height:2px"></div>', unsafe_allow_html=True)
             
-            # Row for text links
             link_col1, link_col2 = st.columns(2)
             with link_col1:
                 st.markdown('<div class="text-link-btn" style="text-align:left;">', unsafe_allow_html=True)
@@ -747,7 +729,6 @@ def drive_err(code):
 #  DATA: UPLOADED CSV LOADER
 # ══════════════════════════════════════════════════════════════════════════════
 def load_uploaded_csv(uploaded_file):
-    """Load user-uploaded CSV file."""
     try:
         df = pd.read_csv(uploaded_file)
         return df, ""
@@ -756,23 +737,16 @@ def load_uploaded_csv(uploaded_file):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  DATA: PRE-LOADED DEMO DATASET  (synthetic BTC-like, no download needed)
+#  DATA: PRE-LOADED DEMO DATASET
 # ══════════════════════════════════════════════════════════════════════════════
 @st.cache_data(show_spinner=False)
 def make_preloaded_demo():
-    """
-    Generates a synthetic Bitcoin-style 1-minute OHLCV dataset.
-    Uses sine + noise + drift to match FA-2 mathematical models.
-    Rubric: Stage 4 Data Preparation — always available, no network needed.
-    """
     np.random.seed(2024)
-    # FIX 2: Increased demo data generation to 1 Million rows!
-    n = 1_000_000 
-    ts_start = 1_325_412_060  # Jan 2012 (same epoch as real dataset)
+    n = 1_000_000
+    ts_start = 1_325_412_060
     timestamps = np.arange(ts_start, ts_start + n*60, 60)
 
     x = np.linspace(0, 12*np.pi, n)
-    # BTC-like price: low-freq cycle + medium-freq noise + long drift + shocks
     base   = 4.58
     trend  = np.linspace(0, 8000, n)
     cycle  = 800 * np.sin(x/4) + 200 * np.cos(x)
@@ -794,24 +768,13 @@ def make_preloaded_demo():
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  DATA: PREPARATION (FA-2 Stage 4 — Distinguished Level)
+#  DATA: PREPARATION (FA-2 Stage 4)
 # ══════════════════════════════════════════════════════════════════════════════
 @st.cache_data(show_spinner=False)
 def prepare(raw: pd.DataFrame) -> pd.DataFrame:
-    """
-    FA-2 Stage 4 Data Preparation:
-    ✅ Loads dataset
-    ✅ Renames columns to standard names
-    ✅ Converts Unix Timestamp → datetime (auto-detects ms vs s)
-    ✅ Converts all OHLCV columns to numeric
-    ✅ Fills missing values with column median
-    ✅ Computes Volatility = High − Low
-    ✅ Sorts by date, drops bad rows
-    """
     df = raw.copy()
     df.columns = [c.strip() for c in df.columns]
 
-    # Rename to standard
     rename = {}
     for c in df.columns:
         cl = c.lower()
@@ -823,7 +786,6 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
         elif "volume" in cl:                               rename[c]="Volume"
     df = df.rename(columns=rename)
 
-    # Parse timestamp
     if "Timestamp" in df.columns:
         ts = pd.to_numeric(df["Timestamp"].dropna().iloc[0], errors="coerce")
         unit = "ms" if pd.notna(ts) and ts > 1e12 else "s"
@@ -834,13 +796,11 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
     else:
         df["Date"] = pd.to_datetime(df.iloc[:,0], errors="coerce")
 
-    # Numeric + fill missing
     for col in ("Open","High","Low","Close","Volume"):
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
             df[col] = df[col].fillna(df[col].median())
 
-    # Volatility = High − Low  (core FA-2 metric)
     if {"High","Low"}.issubset(df.columns):
         df["Volatility"] = (df["High"] - df["Low"]).round(6)
 
@@ -857,12 +817,11 @@ def filter_period(df, period):
     return df if d is None else df[df["Date"] >= end-d].copy()
 
 def thin(df, n=2000):
-    # This brilliant function is what prevents Plotly from crashing when displaying 1M rows!
     return df if len(df)<=n else df.iloc[::max(1,len(df)//n)].copy()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  SIMULATION  (FA-2 Stage 5/6 — Mathematical Models)
+#  SIMULATION  (FA-2 Stage 5/6)
 # ══════════════════════════════════════════════════════════════════════════════
 CLR = dict(sky="#38BDF8", green="#34D399", red="#F87171",
            purple="#818CF8", gold="#FCD34D",
@@ -883,12 +842,6 @@ def lay(fig, title, xl="", yl=""):
     return fig
 
 def simulate(pat, A, f, drift, n=300, base=30000., seed=42):
-    """
-    FA-2 Mathematical Functions:
-      Sine:   y = A·sin(f·x) + drift·x + base
-      Cosine: y = A·cos(f·x) + drift·x + base
-      Noise:  y = N(0, A)    + drift·x + base
-    """
     np.random.seed(seed)
     x = np.linspace(0, 4*np.pi, n); t = drift*x
     if pat == "Sine Wave":   return x, A*np.sin(f*x)+t+base
@@ -981,11 +934,7 @@ def chart_vol_periods(df):
 #  PAGE: DASHBOARD
 # ══════════════════════════════════════════════════════════════════════════════
 def page_dashboard():
-    # ══════════════════════════════════════════════════════════════════════════
-    #  SIDEBAR  (must be rendered FIRST and UNCONDITIONALLY to stay visible)
-    # ══════════════════════════════════════════════════════════════════════════
     with st.sidebar:
-        # User badge
         demo_badge = '<span class="demo-badge">DEMO</span>' if ss["is_demo"] else ""
         st.markdown(
             f'<div style="background:#0D1B2E;border:1px solid #1E3A5F;border-radius:10px;'
@@ -996,7 +945,6 @@ def page_dashboard():
             f'{ss["role"]} · {ss["school"]}</div></div>',
             unsafe_allow_html=True)
 
-        # Added Custom CSS to force exact equal heights and alignment on these specific buttons
         st.markdown("""
         <style>
         [data-testid="stSidebar"] div[data-testid="column"] button {
@@ -1028,7 +976,6 @@ def page_dashboard():
 
         st.divider()
 
-        # ── SIMULATION CONTROLS (FA-2 Stage 6) ───────────────────────────────
         st.markdown('<p class="sh">📊 SIMULATION</p>', unsafe_allow_html=True)
         pattern   = st.selectbox("Wave Pattern",  ["Sine Wave","Cosine Wave","Random Noise"])
         amplitude = st.slider("Amplitude (A — Volatility)", 100., 5000., 1000., 100.,
@@ -1040,7 +987,6 @@ def page_dashboard():
 
         st.divider()
 
-        # ── COMPARISON MODE (FA-2 Stage 6) ───────────────────────────────────
         st.markdown('<p class="sh">⚡ COMPARISON MODE</p>', unsafe_allow_html=True)
         cmp_on = st.toggle("Enable Side-by-Side", value=False,
                            help="Compare stable vs volatile patterns simultaneously.")
@@ -1053,7 +999,6 @@ def page_dashboard():
 
         st.divider()
 
-        # ── REAL DATASET CONTROLS (FA-2 Stage 4) ─────────────────────────────
         st.markdown('<p class="sh">₿ REAL DATASET</p>', unsafe_allow_html=True)
         period = st.selectbox("Time Period",
             ["Last 1 Day","Last 1 Week","Last 1 Month",
@@ -1089,7 +1034,7 @@ Required columns:<br>
 <code>Timestamp, Open, High, Low, Close, Volume</code>
 </div>""", unsafe_allow_html=True)
 
-        else:  # Preloaded Data
+        else:
             if st.button("▶️ Load Data", use_container_width=True,
                          type="primary", key="btn_preload"):
                 with st.spinner("Generating full dataset (all possible rows)…"):
@@ -1100,7 +1045,6 @@ Required columns:<br>
                     except Exception as e:
                         st.error(f"Error generating demo data: {str(e)}")
 
-        # Dataset status
         if ss["df_loaded"] and ss.get("df") is not None:
             df0  = ss["df"]
             src  = {"upload":"Uploaded CSV","preloaded":"Preloaded Data"}.get(ss["df_source"],"Dataset")
@@ -1112,14 +1056,9 @@ Required columns:<br>
 
         st.divider()
 
-        # Sign out
         if st.button("🚪 Sign Out", use_container_width=True, key="sb_signout"):
             for k in list(ss.keys()): del ss[k]
             st.rerun()
-
-    # ══════════════════════════════════════════════════════════════════════════
-    #  MAIN PANEL
-    # ══════════════════════════════════════════════════════════════════════════
 
     # ── Header ────────────────────────────────────────────────────────────────
     demo_badge = '<span class="demo-badge">DEMO MODE</span>' if ss["is_demo"] else ""
@@ -1131,7 +1070,6 @@ Required columns:<br>
         f' · {ss["role"]} · {ss["school"]} · Level: {ss["level"]}</div>'
         f'</div></div>', unsafe_allow_html=True)
 
-    # ── Tabs ──────────────────────────────────────────────────────────────────
     tab1,tab2,tab3,tab4,tab5 = st.tabs([
         "📊 Simulation",
         "₿ Real Dataset",
@@ -1139,8 +1077,10 @@ Required columns:<br>
         "💬 Feedback Wall",
         "📐 Math Concepts"])
 
-    # Compute simulation data (shared across tabs)
+    # ── Compute simulation data ───────────────────────────────────────────────
     x1, y1 = simulate(pattern, amplitude, frequency, drift)
+    # FIX: Always compute a low-amplitude "stable" version for comparison mode
+    x1_stable, y1_stable = simulate(pattern, 200, 1.0, drift)
     m1 = smets(y1)
     if cmp_on and p2:
         x2, y2 = simulate(p2, a2, f2, d2, seed=99)
@@ -1159,17 +1099,20 @@ Required columns:<br>
         st.markdown("<br>", unsafe_allow_html=True)
 
         if cmp_on and p2:
-            st.plotly_chart(chart_compare(x1,y1,x2,y2,
-                f"{pattern} A={amplitude:.0f}",
-                f"{p2} A={a2:.0f}"), use_container_width=True)
+            # ── FIX: Use x1_stable/y1_stable (A=200) for the STABLE left panel ──
+            st.plotly_chart(chart_compare(x1_stable, y1_stable, x2, y2,
+                f"{pattern} A=200 (Stable)",
+                f"{p2} A={a2:.0f} (Volatile)"), use_container_width=True)
 
             c1,c2 = st.columns(2)
             with c1:
+                # ── FIX: Use stable metrics for the left column ──
+                ms = smets(y1_stable)
                 st.markdown(f"**🟢 Stable Asset — {pattern}**\n\n"
                     f"|Metric|Value|\n|---|---|\n"
-                    f"|Volatility σ|${m1['vol']:,.2f}|\n"
-                    f"|Price Range|${m1['rng']:,.2f}|\n"
-                    f"|Trend|{m1['tr']}|")
+                    f"|Volatility σ|${ms['vol']:,.2f}|\n"
+                    f"|Price Range|${ms['rng']:,.2f}|\n"
+                    f"|Trend|{ms['tr']}|")
             with c2:
                 st.markdown(f"**🔴 Volatile Asset — {p2}**\n\n"
                     f"|Metric|Value|\n|---|---|\n"
@@ -1228,22 +1171,17 @@ Required columns:<br>
             ])
             st.markdown("<br>", unsafe_allow_html=True)
 
-            # FA-2 Stage 5: All 4 required charts + Explanations
-            
-            # Chart 1: Close Line
             st.plotly_chart(chart_close(sub), use_container_width=True)
             st.markdown("""<div class="ib">💡 <b>Insightful Explanation (Market Trend):</b> The Close Price line chart exposes the macro momentum of the asset over time. Sharp, sustained upward slopes indicate strong buying pressure (bullish sentiment), while extended flat areas indicate market consolidation and indecision.</div>""", unsafe_allow_html=True)
 
-            # Chart 2 & 3: High/Low Spread & Volume Bar
             c1,c2 = st.columns(2)
-            with c1: 
+            with c1:
                 st.plotly_chart(chart_hl(sub), use_container_width=True)
                 st.markdown("""<div class="wb">💡 <b>Insightful Explanation (Volatility Spread):</b> This filled-area chart tracks intra-period risk. The wider the shaded red band, the larger the gap between the Highest and Lowest trades. Wide bands signal massive market friction and elevated financial risk.</div>""", unsafe_allow_html=True)
-            with c2: 
+            with c2:
                 st.plotly_chart(chart_volume(sub), use_container_width=True)
                 st.markdown("""<div class="gb">💡 <b>Insightful Explanation (Trading Volume):</b> Volume is the fuel of price movement. Massive purple spikes indicate a surge in trades, which often correlates with major market events, confirming breakouts or signaling panic sell-offs.</div>""", unsafe_allow_html=True)
 
-            # Chart 4: Volatile Periods Overlay
             st.plotly_chart(chart_vol_periods(sub), use_container_width=True)
             st.markdown("""
 <div class="rb">
@@ -1261,7 +1199,6 @@ Required columns:<br>
             st.markdown('<div class="wb">⚠ Load a dataset first (sidebar → Real Dataset).</div>',
                         unsafe_allow_html=True)
         else:
-            # FA-2 Stage 4 evidence — full data exploration
             c1,c2 = st.columns(2)
             with c1:
                 st.markdown("**Dataset Shape**")
