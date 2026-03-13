@@ -81,8 +81,8 @@ div[data-testid="stFileUploader"] {
 .ob-screen { text-align:center; padding:80px 20px 40px; }
 .ob-logo   { font-size:80px; margin-bottom:24px; }
 .ob-title  { font-size:42px; font-weight:700; color:#F8FAFC; letter-spacing:-1.5px; line-height:1.2; }
-.ob-sub    { font-size:14px; color:#475569; margin-top:14px; }
-.ob-bar    { width:220px; height:3px; border-radius:3px; margin:40px auto 0;
+.ob-sub     { font-size:14px; color:#475569; margin-top:14px; }
+.ob-bar     { width:220px; height:3px; border-radius:3px; margin:40px auto 0;
              background:linear-gradient(90deg,#0F1E33,#38BDF8,#818CF8,#38BDF8,#0F1E33);
              background-size:300% 100%; animation:barMov 2s linear infinite; }
 @keyframes barMov { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
@@ -968,7 +968,7 @@ def page_dashboard():
 
         c1,c2 = st.columns(2)
         with c1:
-            if st.button("✏️ Edit",     use_container_width=True, key="sb_edit"):
+            if st.button("✏️ Edit",      use_container_width=True, key="sb_edit"):
                 ss.update(page="edit", ep_filled=False); st.rerun()
         with c2:
             if st.button("💬 Feedback", use_container_width=True, key="sb_fb"):
@@ -1094,7 +1094,7 @@ Required columns:<br>
             ("Average Price",    f"${m1['avg']:,.0f}", "Mean"),
             ("Peak Price",       f"${m1['peak']:,.0f}", "Max"),
             ("Average Drift",    f"{drift:+.0f}", "Mean Change"),
-            ("Market Trend",      m1["tr"],             f"drift = {drift:+.0f}"),
+            ("Market Trend",      m1["tr"],               f"drift = {drift:+.0f}"),
         ])
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1236,6 +1236,8 @@ Required columns:<br>
 📌 <b>Stage 4 Complete:</b> Dataset loaded ✅ · Timestamps converted ✅ ·
 Column names standardised ✅ · Missing values filled with median ✅ ·
 Volatility = High − Low computed ✅ · Subset available for clarity ✅
+<br><br>
+💡 <b>Insightful Explanation (Preprocessing):</b> Standardizing columns and filling gaps ensures that mathematical models (like standard deviation) don't crash or provide skewed results due to null values.
 </div>""", unsafe_allow_html=True)
 
     # ── TAB 4: FEEDBACK WALL ──────────────────────────────────────────────────
@@ -1356,6 +1358,11 @@ Most closely mirrors **real BTC** price behaviour. Unpredictable and event-drive
 | Volatility chart | High − Low per row | Real market risk measurement |
 """)
 
+        st.markdown("""
+<div class="ib">
+💡 <b>Insightful Final Note:</b> Mathematical models allow us to turn chaotic market data into structured functions. By adjusting these variables, we can perform <b>Stress Testing</b>—simulating how a portfolio might react to extreme amplitude (volatility) or negative drift (recessions).
+</div>""", unsafe_allow_html=True)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  ROUTER
@@ -1363,8 +1370,8 @@ Most closely mirrors **real BTC** price behaviour. Unpredictable and event-drive
 def main():
     page = ss.get("page","onboard")
     if   page == "onboard":  page_onboard()
-    elif page == "auth":     page_auth()
-    elif page == "edit":     page_edit()
+    elif page == "auth":      page_auth()
+    elif page == "edit":      page_edit()
     elif page == "feedback": page_feedback_form()
     else:                    page_dashboard()
 
